@@ -35,15 +35,13 @@ defaults
 
 frontend www.realcoding.tech
         mode http
-        timeout client 10s
-        bind *:80
-        bind *:443 ssl crt /etc/letsencrypt/live/www.realcoding.tech/fullchain.pem
-        default_backend allServers
+        bind :80
+        bind :443 ssl crt  /etc/letsencrypt/live/www.realcoding.tech/combined.pem
+        http-request redirect code 301 scheme https unless { ssl_fc }
+        default_backend web_servers
 
-backend allServers
-        timeout connect 10s
-        timeout server  10s
-        balance roundrobin
+backend web_servers
         mode http
+        balance roundrobin
         server 5858-web-01 54.92.209.247:80 check
         server 5858-web-02 34.224.25.50:80 check
